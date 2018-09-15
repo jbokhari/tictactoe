@@ -124,13 +124,19 @@ class Game extends React.Component {
 		});
 	}
 
-	jumpTo(step){
+	jumpTo(step, clear){
+		console.log(step);
+		const history = clear ? this.state.history.slice(0, step+1) : this.state.history.slice() ;
 		this.setState({
 			stepNumber: step,
-			turn: (step % 2) === 0 ? "X" : "O"
+			turn: (step % 2) === 0 ? "X" : "O",
+			history: history
 		});
 	}
 
+	renderResetButton(){
+		return (<button onClick={()=>this.jumpTo(0, true)}>Reset?</button>);
+	}
 	render() {
 		const history = this.state.history;
 		const currentMove = this.state.stepNumber;
@@ -157,7 +163,7 @@ class Game extends React.Component {
 
 			lastState = step.squares;
 
-			let desc = move ? <span>Go to move # {move} &#8212; <code>{lastInfo.player}</code> to row <code>{lastInfo.row}</code>, column <code>{lastInfo.col}</code></span> : <span>Got to game start</span>;
+			let desc = move ? <span>Go to move # {move} &#8212; <code>{lastInfo.player}</code> to row <code>{lastInfo.row}</code>, column <code>{lastInfo.col}</code></span> : <span>Game started</span>;
 
 			if (currentMove === move){
 				desc = <strong>{desc}</strong>;
@@ -175,10 +181,17 @@ class Game extends React.Component {
 
 		let status;
 		if ( winner ){
-			status = "Winner! " + winner.player;
+			status = <span>Winner! {winner.player}<br />
+			{this.renderResetButton()}</span>;
+		} else if (history.length === 10) {
+			status = (
+				<span>Draw!<br />
+				{this.renderResetButton()}</span>
+			);
 		} else {
-			status = "Next Player: " + this.state.turn;
+			status = <span>Next Player: {this.state.turn}</span>
 		}
+
 		const sortBtn = <button onClick={()=>this.changeSort()}>{sort}</button>
 		return (
 			<div className="game">

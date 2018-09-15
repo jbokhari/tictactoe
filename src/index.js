@@ -83,7 +83,8 @@ class Game extends React.Component {
 				squares: Array(9).fill(null),
 			}],
 			stepNumber : 0,
-			turn : "X"
+			turn : "X",
+			sort : "ASC"
 		};
 	}
 
@@ -109,6 +110,12 @@ class Game extends React.Component {
 
 	}
 
+	changeSort(){
+		this.setState({
+			sort : this.state.sort === "ASC" ? "DESC" : "ASC"
+		});
+	}
+
 	jumpTo(step){
 		this.setState({
 			stepNumber: step,
@@ -121,6 +128,7 @@ class Game extends React.Component {
 		const currentMove = this.state.stepNumber;
 		const current = history[currentMove];
 		const winner = determineWinner(current.squares);
+		const sort = this.state.sort;
 		let lastState;
 		const moves = history.map((step,move)=>{
 			let lastInfo;
@@ -138,6 +146,7 @@ class Game extends React.Component {
 					}
 				}
 			}
+
 			lastState = step.squares;
 
 			let desc = move ? <span>Go to move # {move} &#8212; <code>{lastInfo.player}</code> to row <code>{lastInfo.row}</code>, column <code>{lastInfo.col}</code></span> : <span>Got to game start</span>;
@@ -152,13 +161,17 @@ class Game extends React.Component {
 			);
 		});
 
+		if (sort === "DESC" ){
+			moves.reverse();
+		}
+		
 		let status;
 		if ( winner ){
 			status = "Winner! " + winner;
 		} else {
 			status = "Next Player: " + this.state.turn;
 		}
-
+		const sortBtn = <button onClick={()=>this.changeSort()}>{sort}</button>
 		return (
 			<div className="game">
 				<div className="game-board">
@@ -169,6 +182,7 @@ class Game extends React.Component {
 				</div>
 				<div className="game-info">
 					<div>{status}</div>
+					<div>{sortBtn}</div>
 					<ol>{moves}</ol>
 				</div>
 			</div>

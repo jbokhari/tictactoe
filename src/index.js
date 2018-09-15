@@ -128,8 +128,8 @@ class Game extends React.Component {
 				for (let k = 0; k < lastState.length; k++) {
 					lastState[k];
 					if (lastState[k] !== step.squares[k]){
-						let row = k % 3 + 1;
-						let col = Math.ceil(k / 3)
+						let row = Math.floor(k / 3) + 1;
+						let col = k % 3 + 1;
 						lastInfo = {
 						 	row: row,
 						 	col: col,
@@ -140,7 +140,7 @@ class Game extends React.Component {
 			}
 			lastState = step.squares;
 
-			const desc = move ? <span>Go to move # {move} &#8212; <code>{lastInfo.player}</code> to row <code>{lastInfo.row}</code>, column <code>{lastInfo.col}</code></span> : <span>Got to game start</span>;
+			let desc = move ? <span>Go to move # {move} &#8212; <code>{lastInfo.player}</code> to row <code>{lastInfo.row}</code>, column <code>{lastInfo.col}</code></span> : <span>Got to game start</span>;
 
 			return (
 				<li key={move}>
